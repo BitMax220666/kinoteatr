@@ -9,7 +9,7 @@ header {
 header > input {
   background-color: rgb(22, 19, 99);
   color: white;
-  padding: 0.5em 1em;
+  padding: .5em 1em;
   border-radius: 5px;
   outline: none;
   border: none;
