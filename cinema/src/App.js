@@ -2,6 +2,7 @@ import "./App.css";
 import Movie from "./components/Movie";
 import { useState, useEffect } from "react";
 import NotFaund from "./components/NotFaund";
+import { Spinner } from "react-bootstrap";
 
 const movieApi = "https://imdb-api.com/en/API/SearchMovie/k_3wz6b2cm/";
 const movieTop = "https://imdb-api.com/en/API/Top250Movies/k_3wz6b2cm/";
@@ -27,16 +28,30 @@ function App() {
 
   const onHandeleSearch = (e) => {
     e.preventDefault();
+    setLoading(true);
     fetch(movieApi + term)
       .then((res) => res.json())
-      .then((res) => setMovie(res.results));
+      .then((res) => {
+        if (res.results.length !== 0) {
+          setMovie(res.results);
+        } else {
+          setError(true);
+        }
+
+        setLoading(false);
+      });
     setTerm("");
   };
 
   const onNotFaund = () => {
+    setLoading(true);
     fetch(movieTop)
       .then((res) => res.json())
-      .then((res) => setMovie(res.items));
+      .then((res) => {
+        setMovie(res.items);
+        setError(false);
+        setLoading(false);
+      });
   };
 
   return (
@@ -55,7 +70,17 @@ function App() {
         {error ? (
           <NotFaund onNotFaund={onNotFaund} />
         ) : loading ? (
-          "loading..."
+          <Spinner
+            animation="border"
+            variant="light"
+            style={{
+              width: "5rem",
+              height: "5rem",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+            }}
+          />
         ) : (
           movie.map((elem) => <Movie key={elem.id} {...elem} />)
         )}
